@@ -27,7 +27,7 @@ public class Connection extends Thread {
             String newClientMessage = String.format("(%s) Новый участник подключился к чату.", getCurrentTime());
             System.out.println(newClientMessage);
             for (Connection connection : Server.serverList) {
-                connection.sendMessageToAll(newClientMessage);
+                connection.sendMessageToAllClients(newClientMessage);
             }
             try {
                 out.write(message + "\n");
@@ -38,16 +38,17 @@ public class Connection extends Thread {
                     message = in.readLine();
                     if(message.equals("exit")) {
                         this.downService();
-                        System.out.println("Участник вышел из чата.");
+                        String removeClientMessage = String.format("(%s) Участник вышел из чата.", getCurrentTime());
+                        System.out.println(removeClientMessage);
                         for (Connection connection : Server.serverList) {
-                            connection.sendMessageToAll("Участник вышел из чата.");
+                            connection.sendMessageToAllClients(removeClientMessage);
                         }
                         break;
                     }
                     System.out.println("Сообщение: " + message);
                     Server.story.addStoryMessage(message);
                     for (Connection connection : Server.serverList) {
-                        connection.sendMessageToAll(message);
+                        connection.sendMessageToAllClients(message);
                     }
                 }
             } catch (NullPointerException ignored) {}
@@ -63,7 +64,7 @@ public class Connection extends Thread {
         return dateFormat.format(new Date());
     }
 
-    private void sendMessageToAll(String msg) {
+    private void sendMessageToAllClients(String msg) {
         try {
             out.write(msg + "\n");
             out.flush();
@@ -73,9 +74,7 @@ public class Connection extends Thread {
 
     private void downService() {
         try {
-            for (Connection connection : Server.serverList) {
-                Server.serverList.remove(this);
-            }
+            Server.serverList.remove(this);
             if(!socket.isClosed()) {
                 in.close();
                 out.close();
