@@ -63,10 +63,6 @@ public class ClientInstance {
             try {
                 while (true) {
                     str = in.readLine();
-                    if (str.equals("stop")) {
-                        ClientInstance.this.downService();
-                        break;
-                    }
                     System.out.println(str);
                 }
             } catch (IOException e) {
@@ -85,9 +81,11 @@ public class ClientInstance {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
                     String time = dateFormat.format(new Date());
                     userWord = inputUser.readLine();
-                    if (userWord.equals("stop")) {
-                        out.write("stop");
-                        out.flush();
+                    if(userWord.equals("")) {
+                        continue;
+                    }
+                    if (userWord.equals("exit")) {
+                        out.write("exit" + "\n");
                         ClientInstance.this.downService();
                         break;
                     } else {
@@ -96,7 +94,6 @@ public class ClientInstance {
                     out.flush();
                 } catch (IOException e) {
                     ClientInstance.this.downService();
-
                 }
 
             }

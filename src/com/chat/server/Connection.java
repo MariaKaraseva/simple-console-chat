@@ -21,32 +21,33 @@ public class Connection extends Thread {
 
     @Override
     public void run() {
-        String word;
+        String message;
         try {
-            word = in.readLine();
-            String newClientMessage = String.format("(%s) Новый участник подключился к чату. Количество активных участников: %d", getCurrentTime(), Server.serverList.size());
+            message = in.readLine();
+            String newClientMessage = String.format("(%s) Новый участник подключился к чату.", getCurrentTime());
             System.out.println(newClientMessage);
             for (Connection connection : Server.serverList) {
                 connection.sendMessageToAll(newClientMessage);
             }
             try {
-                out.write(word + "\n");
+                out.write(message + "\n");
                 out.flush();
             } catch (IOException ignored) {}
             try {
                 while (true) {
-                    word = in.readLine();
-                    if(word.equals("stop")) {
-                        for (Connection connection : Server.serverList) {
-                            connection.sendMessageToAll("Участник вышел из чата");
-                        }
+                    message = in.readLine();
+                    if(message.equals("exit")) {
                         this.downService();
+                        System.out.println("Участник вышел из чата.");
+                        for (Connection connection : Server.serverList) {
+                            connection.sendMessageToAll("Участник вышел из чата.");
+                        }
                         break;
                     }
-                    System.out.println("Сообщение: " + word);
-                    Server.story.addStoryMessage(word);
+                    System.out.println("Сообщение: " + message);
+                    Server.story.addStoryMessage(message);
                     for (Connection connection : Server.serverList) {
-                        connection.sendMessageToAll(word);
+                        connection.sendMessageToAll(message);
                     }
                 }
             } catch (NullPointerException ignored) {}
@@ -72,14 +73,13 @@ public class Connection extends Thread {
 
     private void downService() {
         try {
+            for (Connection connection : Server.serverList) {
+                Server.serverList.remove(this);
+            }
             if(!socket.isClosed()) {
-                socket.close();
                 in.close();
                 out.close();
-                for (Connection connection : Server.serverList) {
-                    if(connection.equals(this)) connection.interrupt();
-                    Server.serverList.remove(this);
-                }
+                socket.close();
             }
         } catch (IOException ignored) {}
     }
