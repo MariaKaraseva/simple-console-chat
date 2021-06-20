@@ -78,6 +78,9 @@ public class ClientInstance {
             while (true) {
                 String userWord;
                 try {
+                    if (inputUser.equals(null)) {
+                        break;
+                    }
                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
                     String time = dateFormat.format(new Date());
                     userWord = inputUser.readLine();
@@ -85,7 +88,8 @@ public class ClientInstance {
                         continue;
                     }
                     if (userWord.equals("exit")) {
-                        out.write("exit" + "\n");
+                        out.write("exit, " + nickname + "\n");
+                        /*Если убрать две строки ниже, то будет работать информирование об удалении соединения, но не будет нормального закрытия клиента*/
                         ClientInstance.this.downService();
                         break;
                     } else {
