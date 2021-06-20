@@ -8,11 +8,10 @@ import java.util.LinkedList;
 public class Story {
 
     private LinkedList<String> story = new LinkedList<>();
+    private int maxStoryMessageCount = 10;
 
     public void addStoryMessage(String message) {
-        // если сообщений больше 10, удаляем первое и добавляем новое
-        // иначе просто добавить
-        if (story.size() >= 10) {
+        if (story.size() >= maxStoryMessageCount) {
             story.removeFirst();
             story.add(message);
         } else {
@@ -27,7 +26,7 @@ public class Story {
                 for (String message : story) {
                     writer.write(message + "\n");
                 }
-                writer.write("/...." + "\n");
+                writer.write("<----->" + "\n");
                 writer.flush();
             } catch (IOException ignored) {}
 

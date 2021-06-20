@@ -45,7 +45,7 @@ public class Connection extends Thread {
                         }
                         break;
                     }
-                    System.out.println("Сообщение: " + message);
+                    System.out.println(message);
                     Server.story.addStoryMessage(message);
                     for (Connection connection : Server.serverList) {
                         connection.sendMessageToAllClients(message);
