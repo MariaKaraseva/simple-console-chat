@@ -23,8 +23,8 @@ public class Connection extends Thread {
     public void run() {
         String message;
         try {
-            message = in.readLine();
-            String newClientMessage = String.format("(%s) Новый участник %s подключился к чату.", getCurrentTime(), message.substring(message.indexOf(",")+2));
+            message = in.readLine();String clientNickname = message.substring(message.indexOf(",")+2);
+            String newClientMessage = String.format("(%s) Новый участник %s подключился к чату.", getCurrentTime(), clientNickname);
             System.out.println(newClientMessage);
             for (Connection connection : Server.serverList) {
                 connection.sendMessageToAllClients(newClientMessage);
@@ -36,9 +36,9 @@ public class Connection extends Thread {
             try {
                 while (true) {
                     message = in.readLine();
-                    if(message.matches(".*?\\bexit\\b.*?")) {
+                    if(message.equals("exit")) {
                         this.downService();
-                        String removeClientMessage = String.format("(%s) Участник %s вышел из чата.", getCurrentTime(), message.substring(message.indexOf(",")+2));
+                        String removeClientMessage = String.format("(%s) Участник %s вышел из чата.", getCurrentTime(), clientNickname);
                         System.out.println(removeClientMessage);
                         for (Connection connection : Server.serverList) {
                             connection.sendMessageToAllClients(removeClientMessage);

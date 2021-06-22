@@ -88,7 +88,7 @@ public class ClientInstance {
                         continue;
                     }
                     if (userWord.equals("exit")) {
-                        out.write("exit, " + nickname + "\n");
+                        out.write("exit" + "\n");
                         /*Если убрать две строки ниже, то будет работать информирование об удалении соединения, но не будет нормального закрытия клиента*/
                         ClientInstance.this.downService();
                         break;
